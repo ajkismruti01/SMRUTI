@@ -1,24 +1,24 @@
 # SMRUTI Deployment Guide (Vercel + Render)
 
-## 📁 Clean Structure
+## 📁 Repository Structure
 ```text
 smruti/
-├── client/   --> Deploy on VERCEL (Frontend)
-└── server/   --> Deploy on RENDER (Backend)
+├── smruti-frontend/   --> Deploy on VERCEL (Frontend)
+└── smruti-backend/    --> Deploy on RENDER (Backend)
 ```
 
 ---
 
-## 1. 🚀 Backend Deployment on Render (`server/`)
+## 1. 🚀 Backend Deployment on Render (`smruti-backend/`)
 
 1. Go to [Render Dashboard](https://dashboard.render.com/) and click **New +** -> **Web Service**.
 2. Connect your GitHub repository: `https://github.com/ajkismruti01/SMRUTI`.
 3. Configure the service:
-   - **Root Directory**: `server`
+   - **Root Directory**: `smruti-backend`
    - **Environment**: `Node`
    - **Build Command**: `npm install`
    - **Start Command**: `npm start`
-4. Add **Environment Variables** in Render (from your `server/.env`):
+4. Add **Environment Variables** in Render (from your `smruti-backend/.env`):
    - `NODE_ENV`: `production`
    - `PORT`: `5000`
    - `FRONTEND_URL`: `https://<your-vercel-frontend-url>`
@@ -34,13 +34,13 @@ smruti/
 
 ---
 
-## 2. ⚡ Frontend Deployment on Vercel (`client/`)
+## 2. ⚡ Frontend Deployment on Vercel (`smruti-frontend/`)
 
 1. Go to [Vercel Dashboard](https://vercel.com/dashboard) and click **Add New...** -> **Project**.
 2. Select your repository: `ajkismruti01/SMRUTI`.
 3. Configure project settings:
    - **Framework Preset**: `Vite`
-   - **Root Directory**: `client`
+   - **Root Directory**: `smruti-frontend`
    - **Build Command**: `npm run build`
    - **Output Directory**: `dist`
 4. Add **Environment Variables** in Vercel:

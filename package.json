@@ -3,9 +3,9 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "dev": "npm run dev --prefix client",
-    "dev:server": "npm run dev --prefix server",
-    "build:client": "npm run build --prefix client",
-    "seed": "npm run seed --prefix server"
+    "dev": "npm run dev --prefix smruti-frontend",
+    "dev:server": "npm run dev --prefix smruti-backend",
+    "build:frontend": "npm run build --prefix smruti-frontend",
+    "seed": "npm run seed --prefix smruti-backend"
   }
 }
