@@ -1,3 +1,4 @@
+import MongoStore from 'connect-mongo';
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -63,12 +64,18 @@ export const createApp = () => {
   // Rate Limiting
   app.use(generalLimiter);
 
-  // Session
+  // Production Persistent Session Storage (MongoDB)
   app.use(
     session({
       secret: config.sessionSecret,
       resave: false,
       saveUninitialized: false,
+      store: MongoStore.create({
+        mongoUrl: config.mongodbUri,
+        collectionName: 'sessions',
+        ttl: 30 * 24 * 60 * 60, // 30 days
+        autoRemove: 'native',
+      }),
       cookie: {
         httpOnly: true,
         secure: config.env === 'production',
