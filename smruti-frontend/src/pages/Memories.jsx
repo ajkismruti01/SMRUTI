@@ -122,20 +122,44 @@ export default function Memories(){
         <div className="card p-5">
           <h3 className="font-semibold mb-4">Memory Summary</h3>
           <div className="space-y-3">
-            {[['Total Memories',245],['Photos',180],['Videos',32],['Audio',18],['Documents',15]].map(([l,v])=>
-              <div className="flex justify-between text-sm" key={l}><span className="text-stone-600">{l}</span><b className="text-stone-800">{v}</b></div>
-            )}
+            {[
+              ['Total Memories', memories.length],
+              ['Photos', memories.filter((m) => m.type === 'Photos' || !m.type).length],
+              ['Videos', memories.filter((m) => m.type === 'Videos').length],
+              ['Audio', memories.filter((m) => m.type === 'Audio').length],
+              ['Documents', memories.filter((m) => m.type === 'Documents').length],
+            ].map(([l, v]) => (
+              <div className="flex justify-between text-sm" key={l}>
+                <span className="text-stone-600">{l}</span>
+                <b className="text-stone-800">{v}</b>
+              </div>
+            ))}
           </div>
         </div>
 
         <div className="card p-5">
-          <div className="flex justify-between mb-4"><h3 className="font-semibold">Most Active</h3><button className="text-sm text-olive">View All</button></div>
+          <div className="flex justify-between mb-4">
+            <h3 className="font-semibold">Family Members</h3>
+            <Link to="/members" className="text-sm text-olive">View All</Link>
+          </div>
           <div className="space-y-4">
-            {[['Rohan (You)',56,100],['Mom',42,75],['Dad',38,68],['Dadi',25,45]].map(([n,v,p])=>
-              <div key={n}>
-                <div className="flex justify-between text-sm mb-1"><span className="text-stone-600">{n}</span><b className="text-stone-800">{v}</b></div>
-                <div className="h-1.5 bg-stone-200 rounded-full overflow-hidden"><div className="h-full bg-olive rounded-full" style={{width:`${p}%`}}/></div>
-              </div>
+            {memories.length > 0 ? (
+              [
+                ['Memories Shared', memories.length, 100],
+                ['Active Archive', 100, 100],
+              ].map(([n, v, p]) => (
+                <div key={n}>
+                  <div className="flex justify-between text-sm mb-1">
+                    <span className="text-stone-600">{n}</span>
+                    <b className="text-stone-800">{v}</b>
+                  </div>
+                  <div className="h-1.5 bg-stone-200 rounded-full overflow-hidden">
+                    <div className="h-full bg-olive rounded-full" style={{ width: `${p}%` }} />
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="text-xs text-stone-500">No active members data yet.</p>
             )}
           </div>
         </div>

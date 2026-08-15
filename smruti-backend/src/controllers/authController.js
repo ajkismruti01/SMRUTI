@@ -31,6 +31,31 @@ export const getMe = async (req, res) => {
       await user.save();
     }
 
+    // If user has no family at all (e.g. freshly registered), auto-link to Mehta Family or create one
+    if (!activeFamily) {
+      let defaultFamily = await Family.findOne({ name: 'Mehta Family' });
+      if (!defaultFamily) {
+        defaultFamily = await Family.create({
+          name: 'Mehta Family',
+          description: 'Our private family space for cherished memories.',
+          familyPhoto: 'https://images.unsplash.com/photo-1511895426328-dc8714191300?w=1200',
+          ownerId: user._id,
+        });
+      }
+      await FamilyMember.create({
+        familyId: defaultFamily._id,
+        userId: user._id,
+        name: user.name,
+        relationship: 'Member',
+        photo: user.profileImage,
+        role: 'MEMBER',
+      });
+      user.currentFamilyId = defaultFamily._id;
+      await user.save();
+      activeFamily = defaultFamily;
+      allFamilies.push(defaultFamily);
+    }
+
     return successResponse(res, {
       user: {
         _id: user._id,
