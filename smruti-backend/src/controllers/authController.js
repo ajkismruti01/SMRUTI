@@ -52,7 +52,8 @@ export const getMe = async (req, res) => {
 
 export const handleGoogleCallback = (req, res) => {
   // Passport sets req.user upon successful OAuth
-  const returnTo = req.session?.returnTo || `${config.frontendUrl}/`;
+  const frontendBase = (config.frontendUrl || 'https://smruti-ajki.vercel.app').replace(/\/$/, '');
+  const returnTo = req.session?.returnTo || `${frontendBase}/`;
   delete req.session?.returnTo;
   return res.redirect(returnTo);
 };

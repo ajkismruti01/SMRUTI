@@ -14,6 +14,9 @@ import { generalLimiter } from './middleware/rateLimitMiddleware.js';
 export const createApp = () => {
   const app = express();
 
+  // Trust proxy for Render/Vercel reverse proxies
+  app.set('trust proxy', 1);
+
   // Security Headers
   app.use(
     helmet({
@@ -25,6 +28,7 @@ export const createApp = () => {
   // CORS Configuration
   const allowedOrigins = [
     config.frontendUrl,
+    'https://smruti-ajki.vercel.app',
     'http://localhost:5173',
     'http://localhost:5174',
     'http://127.0.0.1:5173',
@@ -34,10 +38,10 @@ export const createApp = () => {
   app.use(
     cors({
       origin: (origin, callback) => {
-        if (!origin || allowedOrigins.includes(origin)) {
+        if (!origin || allowedOrigins.some((ao) => ao && origin.startsWith(ao.replace(/\/$/, '')))) {
           callback(null, true);
         } else {
-          callback(null, true); // Allow dev variations
+          callback(null, true); // Allow during production transition
         }
       },
       credentials: true,
