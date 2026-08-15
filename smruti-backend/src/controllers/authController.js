@@ -1,3 +1,4 @@
+import jwt from 'jsonwebtoken';
 import { User } from '../models/User.js';
 import { Family } from '../models/Family.js';
 import { FamilyMember } from '../models/FamilyMember.js';
@@ -77,10 +78,18 @@ export const getMe = async (req, res) => {
 
 export const handleGoogleCallback = (req, res) => {
   // Passport sets req.user upon successful OAuth
+  const user = req.user;
+  const token = jwt.sign({ userId: user._id, email: user.email }, config.sessionSecret, { expiresIn: '30d' });
+
   const frontendBase = (config.frontendUrl || 'https://smruti-ajki.vercel.app').replace(/\/$/, '');
   const returnTo = req.session?.returnTo || `${frontendBase}/`;
   delete req.session?.returnTo;
-  return res.redirect(returnTo);
+
+  // Append token to url so frontend can store in localStorage
+  const redirectUrl = new URL(returnTo.startsWith('http') ? returnTo : `${frontendBase}${returnTo}`);
+  redirectUrl.searchParams.set('token', token);
+
+  return res.redirect(redirectUrl.toString());
 };
 
 export const logout = (req, res, next) => {

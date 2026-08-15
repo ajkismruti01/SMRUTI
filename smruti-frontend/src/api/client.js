@@ -12,6 +12,23 @@ class ApiError extends Error {
 
 const API_BASE = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_URL) || '/api';
 
+// Helper to get stored auth token
+function getAuthToken() {
+  if (typeof window === 'undefined') return null;
+  const urlParams = new URLSearchParams(window.location.search);
+  const tokenFromUrl = urlParams.get('token');
+  if (tokenFromUrl) {
+    localStorage.setItem('smruti_auth_token', tokenFromUrl);
+    // Clean token from url bar
+    urlParams.delete('token');
+    const newSearch = urlParams.toString();
+    const newUrl = window.location.pathname + (newSearch ? `?${newSearch}` : '') + window.location.hash;
+    window.history.replaceState(null, '', newUrl);
+    return tokenFromUrl;
+  }
+  return localStorage.getItem('smruti_auth_token');
+}
+
 /**
  * @param {string} endpoint
  * @param {RequestInit & { headers?: Record<string, string> }} [options]
@@ -19,8 +36,10 @@ const API_BASE = (typeof import.meta !== 'undefined' && import.meta.env && impor
 async function request(endpoint, options = {}) {
   const url = `${API_BASE}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
   
+  const token = getAuthToken();
   const headers = {
     'Content-Type': 'application/json',
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
     ...(options.headers || {}),
   };
 
@@ -62,16 +81,31 @@ export const api = {
   auth: {
     me: () => request('/auth/me'),
     loginWithProvider: (provider = 'google', returnTo = window.location.href) => {
-      window.location.href = `${API_BASE}/auth/google?returnTo=${encodeURIComponent(returnTo)}`;
+      // Use render direct or relative auth url
+      const targetAuth = `${API_BASE}/auth/google?returnTo=${encodeURIComponent(returnTo)}`;
+      window.location.href = targetAuth;
     },
     devLogin: (email, name) => request('/auth/dev-login', { method: 'POST', body: JSON.stringify({ email, name }) }),
-    loginViaEmailPassword: (email, password) =>
-      request('/auth/dev-login', { method: 'POST', body: JSON.stringify({ email, name: email.split('@')[0] }) }),
-    register: ({ email, password, name }) =>
-      request('/auth/dev-login', { method: 'POST', body: JSON.stringify({ email, name: name || email.split('@')[0] }) }),
+    loginViaEmailPassword: async (email, password) => {
+      const res = await request('/auth/dev-login', { method: 'POST', body: JSON.stringify({ email, name: email.split('@')[0] }) });
+      if (res && res.token) {
+        localStorage.setItem('smruti_auth_token', res.token);
+      }
+      return res;
+    },
+    register: async ({ email, password, name }) => {
+      const res = await request('/auth/dev-login', { method: 'POST', body: JSON.stringify({ email, name: name || email.split('@')[0] }) });
+      if (res && res.token) {
+        localStorage.setItem('smruti_auth_token', res.token);
+      }
+      return res;
+    },
     verifyOtp: async () => ({ access_token: 'session_active' }),
     resendOtp: async () => ({ success: true }),
-    setToken: () => {},
+    setToken: (token) => {
+      if (token) localStorage.setItem('smruti_auth_token', token);
+      else localStorage.removeItem('smruti_auth_token');
+    },
     resetPasswordRequest: async () => ({ success: true }),
     resetPassword: async () => ({ success: true }),
     logout: async (redirectUrl = '/login') => {
@@ -80,6 +114,7 @@ export const api = {
       } catch (e) {
         // ignore
       }
+      localStorage.removeItem('smruti_auth_token');
       if (redirectUrl) window.location.href = redirectUrl;
     },
     redirectToLogin: (returnUrl = '/') => {
