@@ -35,4 +35,24 @@
 .tree-node-info{font-size:11px;color:#888;margin-top:1px}
 .tree-collapse-btn{margin-top:8px;padding:6px 16px;border-radius:20px;border:1px dashed #c4b89e;background:white;color:#573c27;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:4px;transition:background .15s}
 .tree-collapse-btn:hover{background:#f7f2ec}
-.tree-legend{display:flex;gap:16px;padding:12px 16px;flex-wrap:wrap;align-items:center}@media(max-width:1023px){body{padding-bottom:68px}}
+.tree-legend{display:flex;gap:16px;padding:12px 16px;flex-wrap:wrap;align-items:center}
+@media(max-width:1023px){body{padding-bottom:68px}}
+
+/* Custom Sleek Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #dcd3c3;
+  border-radius: 9999px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #b5a894;
+}
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #dcd3c3 transparent;
+}
