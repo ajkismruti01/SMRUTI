@@ -1,0 +1,1 @@
+export default function FilterBar({items,value,onChange}){return <div className="flex gap-2 overflow-x-auto pb-2">{items.map(x=><button key={x} onClick={()=>onChange(x)} className={`filter-pill ${value===x?'active':''}`}>{x}</button>)}</div>}

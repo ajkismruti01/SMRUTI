@@ -1,0 +1,2 @@
+import {TreePine} from 'lucide-react';
+export default function Brand({compact=false}){return <div className={`flex items-center ${compact?'gap-2':'flex-col text-center'}`}><TreePine className={compact?'w-8 h-8 text-olive':'w-16 h-16 text-olive'}/><div><div className={`${compact?'text-xl':'text-3xl'} font-display tracking-[.16em] text-brown`}>SMRUTI</div>{!compact&&<div className="text-[9px] text-stone-500 mt-1">Preserve Yesterday. Remember Forever.</div>}</div></div>}

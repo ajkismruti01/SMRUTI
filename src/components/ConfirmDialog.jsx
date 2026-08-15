@@ -1,0 +1,4 @@
+import {Dialog,DialogContent,DialogHeader,DialogTitle,DialogDescription,DialogFooter} from '@/components/ui/dialog';
+export default function ConfirmDialog({open,onOpenChange,onConfirm,title='Remove from family archive?',description='This action cannot be undone.',confirmLabel='Delete',confirmClass='bg-red-700'}){
+  return <Dialog open={open} onOpenChange={onOpenChange}><DialogContent><DialogHeader><DialogTitle>{title}</DialogTitle><DialogDescription>{description}</DialogDescription></DialogHeader><DialogFooter><button className="btn-outline" onClick={()=>onOpenChange(false)}>Cancel</button><button className={`btn ${confirmClass}`} onClick={onConfirm}>{confirmLabel}</button></DialogFooter></DialogContent></Dialog>;
+}
